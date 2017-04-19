@@ -40,18 +40,22 @@ print("Loading MNIST data ...")
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 trX, trY, teX, teY = mnist.train.images, mnist.train.labels, mnist.test.images, mnist.test.labels
 
-print("Preparing INPUT Neurons (placeholder): 784 items to 'see' all the 28x28 pixels of the image")
-X = tf.placeholder("float", [None, 784])
+input_layer_neurons=784
+first_h_layer_neurons=1568
+second_h_layer_neurons=1568
+output_layer_neurons=10
+training_speed=0.001
+print("Neurons >      INPUT LAYER: ", input_layer_neurons,    " - (placeholder) items to 'see' all the 28x28 pixels of the image")
+print("Neurons > 1st HIDDEN LAYER: ", first_h_layer_neurons,  " - (variable)    initializing weights for ", input_layer_neurons, "->", first_h_layer_neurons, " matmul ...")
+print("Neurons > 2nd HIDDEN LAYER: ", second_h_layer_neurons, " - (variable)    initializing weights for ", first_h_layer_neurons, "->", second_h_layer_neurons, " matmul ...")
+print("Neurons >     OUTPUT LAYER: ", output_layer_neurons,   " - (placeholder) items to classify image into digits from '0' to '9'")
 
-print("Preparing OUTPUT Neurons (placeholder): 10 items to classify image into digits from '0' to '9'")
-Y = tf.placeholder("float", [None, 10])
+X = tf.placeholder("float", [None, input_layer_neurons ])
+Y = tf.placeholder("float", [None, output_layer_neurons])
 
-print("First HIDDEN Layer is of 1568 neurons, initializing weights for 784->1568 matmul ...")
-w_h = init_weights([784, 1568])
-print("Second HIDDEN Layer is of 1568 neurons as well, initializing weights for 1568->1568 matmul ...")
-w_h2 = init_weights([1568, 1568])
-print("The Output Layer backs to 10 neurons, initializing weights for 1568->10 matmul ...")
-w_o = init_weights([1568, 10])
+w_h =  init_weights([input_layer_neurons,    first_h_layer_neurons ])
+w_h2 = init_weights([first_h_layer_neurons,  second_h_layer_neurons])
+w_o =  init_weights([second_h_layer_neurons, output_layer_neurons  ])
 
 print("There are 'keep_input' and 'keep_hidden' parameters for 'dropout' functions that must be investigated further! Initializing placeholders")
 p_keep_input = tf.placeholder("float")
@@ -67,8 +71,8 @@ py_x = model(X, w_h, w_h2, w_o, p_keep_input, p_keep_hidden)
 print("Training Configuration:")
 print("  - Softmax + logits")
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=py_x, labels=Y))
-print("  - RMS Optmizer")
-train_op = tf.train.RMSPropOptimizer(0.001, 0.9).minimize(cost)
+print("  - RMS Optmizer, Speed: ", training_speed)
+train_op = tf.train.RMSPropOptimizer(training_speed).minimize(cost)
 
 print("")
 predict_op = tf.argmax(py_x, 1)
@@ -76,12 +80,12 @@ predict_op = tf.argmax(py_x, 1)
 print("")
 print("PREPARING HANDMADE IMAGE, NOT FROM MNIST!")
 
-img = mpimg.imread('MY_data/aDigit_4.png')
-print("     ORIGINAL IMAGE: ", img)
+img = mpimg.imread('MY_data/aDigit_10.png')
+#print("     ORIGINAL IMAGE: ", img)
 img = img[:,:,0] # slicking: picking only one channel of RGB (black'n'white!)
-print("       SLICED IMAGE: ", img)
+#print("       SLICED IMAGE: ", img)
 img = img.flatten('C')
-print("      IMAGE AS 1D V: ", img)
+#print("      IMAGE AS 1D V: ", img)
 
 
 #testSample = teX[15]
@@ -96,6 +100,9 @@ benchmark = [expected]
 print("")
 print(" EXPECTED CLASSIFICATION VECTOR: ", expected)
 print("EXPECTED CLASSIFICATION OUTCOME: ", np.argmax(expected))
+
+# Add ops to save and/or restore all the variables.
+saver = tf.train.Saver()
 
 # Launch the graph in a session
 with tf.Session() as sess:
@@ -132,3 +139,7 @@ with tf.Session() as sess:
                                                     p_keep_hidden: 1.0})))
 
         print("------------------------------------------------------------------")
+
+        print("Saving Model ...")
+        save_path = saver.save(sess, 'sessions/model_prova01_')# + i + '.ckpt')
+        print("Model saved in file: %s" % save_path)
