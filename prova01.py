@@ -43,6 +43,8 @@ trX, trY, teX, teY = mnist.train.images, mnist.train.labels, mnist.test.images, 
 input_layer_neurons=784
 first_h_layer_neurons=400
 second_h_layer_neurons=400
+first_h_layer_neurons=600
+second_h_layer_neurons=600
 output_layer_neurons=10
 training_speed=0.001
 print("Neurons >      INPUT LAYER: ", input_layer_neurons,    " - (placeholder) items to 'see' all the 28x28 pixels of the image")
@@ -80,7 +82,7 @@ predict_op = tf.argmax(py_x, 1)
 print("")
 print("PREPARING HANDMADE IMAGE, NOT FROM MNIST!")
 
-img = mpimg.imread('MY_data/aDigit_10.png')
+img = mpimg.imread('MY_data/aDigit_SEI.png')
 #print("     ORIGINAL IMAGE: ", img)
 img = img[:,:,0] # slicking: picking only one channel of RGB (black'n'white!)
 #print("       SLICED IMAGE: ", img)
