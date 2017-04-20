@@ -41,8 +41,8 @@ mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 trX, trY, teX, teY = mnist.train.images, mnist.train.labels, mnist.test.images, mnist.test.labels
 
 input_layer_neurons=784
-first_h_layer_neurons=1568
-second_h_layer_neurons=1568
+first_h_layer_neurons=400
+second_h_layer_neurons=400
 output_layer_neurons=10
 training_speed=0.001
 print("Neurons >      INPUT LAYER: ", input_layer_neurons,    " - (placeholder) items to 'see' all the 28x28 pixels of the image")
@@ -140,6 +140,18 @@ with tf.Session() as sess:
 
         print("------------------------------------------------------------------")
 
-        print("Saving Model ...")
-        save_path = saver.save(sess, 'sessions/model_prova01_')# + i + '.ckpt')
-        print("Model saved in file: %s" % save_path)
+        do_save=0
+        if i == 0:
+            do_save = 1
+        elif i == 4:
+            do_save = 1
+        elif i == 9:
+            do_save = 1
+        elif i == 99:
+            do_save = 1
+
+        if do_save == 1:
+            save_path = 'sessions/prova01/' + str(i+1) + '/model'
+            print("Saving Model ... on ", save_path)
+            save_path = saver.save(sess, save_path)
+            print("Model saved in file: %s" % save_path)
