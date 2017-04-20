@@ -90,3 +90,9 @@ ENV/
 
 # MNIST
 MNIST_data/*.gz
+
+# TRAINING SESSIONS
+i*/sessions/**/checkpoint
+i*/sessions/**/*.meta
+i*/sessions/**/*.index
+i*/sessions/**/*.data*
