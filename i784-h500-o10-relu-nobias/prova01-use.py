@@ -86,7 +86,7 @@ py_x = model(X, w_h, w_o, p_keep_input, p_keep_hidden)
 # Select what checkpoint you want to use
 #  (it's a number that recalls the number of cycles performed to train the net)
 # 1, 5, 10, 100
-training_progress=10
+training_progress=50
 
 # Select the IMAGE DIGIT you want to try to recognize
 img = mpimg.imread('../MY_data/aDigit_UNO.png')
